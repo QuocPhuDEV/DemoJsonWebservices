@@ -106,6 +106,7 @@ public class Products_Activity extends AppCompatActivity {
             try {
                 HttpPost httpPost = new HttpPost(URL);
 
+
                 // Gán giá trị
                 PartNo = edPartNo.getText().toString();
                 Serial = edSerial.getText().toString();
