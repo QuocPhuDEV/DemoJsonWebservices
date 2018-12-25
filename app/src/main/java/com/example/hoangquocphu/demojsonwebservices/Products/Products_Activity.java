@@ -37,7 +37,7 @@ public class Products_Activity extends AppCompatActivity {
     private TextView edPartNo, edSerial;
 
     public String PartNo, Serial;
-    public static String URL = "192.168.200.232/crm/api/carton/savelabel?partno=8989&serial=8989";
+    public static String URL = "http://192.168.1.102/api/carton/savelabel?partno=8989&serial=8989";
     //endregion
 
     @Override
@@ -83,10 +83,10 @@ public class Products_Activity extends AppCompatActivity {
 
     // region XỬ LÝ EVENTS
     public void sendDataToService() {
-
+        new AsyncTaskProducts().execute();
     }
 
-    private class AsyncTaskProducts extends AsyncTask<String, Void, Void> {
+    public class AsyncTaskProducts extends AsyncTask<String, Void, Void> {
         private final HttpClient client = new DefaultHttpClient();
         private String Content;
         private String Error = null;
