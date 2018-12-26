@@ -1,12 +1,20 @@
 package com.example.hoangquocphu.demojsonwebservices.Login;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -157,13 +165,42 @@ public class Login_Activity extends AppCompatActivity {
 
     // Xử lý button cancel
     public void btnCancel(View view) {
-        System.exit(0);
+        //System.exit(0);
+        getPhoneNumber();
     }
 
     // Đọc url
     public void readUrlLink() {
         String url = "http://192.168.200.191/api/user/login?userid=" + edUser.getText() + "&password=" + edPassword.getText();
         new MyJsonTask().execute(url);
+    }
+
+    // Lấy sđt
+    public void getPhoneNumber() {
+
+        // Lưu ý khi lấy số điện thoại
+        // Cấp đủ quyền cho nó READ_PHONE_STATE
+        // Máy cần lấy sđt phải khai báo số điện thoại trong máy
+
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, " You are not granted permission.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String mPhoneNumber = manager.getLine1Number();
+        Toast.makeText(this, "" + mPhoneNumber, Toast.LENGTH_SHORT).show();
+
+//        AccountManager am = AccountManager.get(this);
+//        Account[] accounts = am.getAccounts();
+//
+//        for (Account ac : accounts) {
+//            String acname = ac.name;
+//            String actype = ac.type;
+//            // Take your time to look at all available accounts
+//            Toast.makeText(this, "" + acname + " " + actype, Toast.LENGTH_SHORT).show();
+//        }
+
     }
     //endregion
 }

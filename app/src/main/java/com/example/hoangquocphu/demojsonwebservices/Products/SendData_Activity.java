@@ -1,11 +1,15 @@
 package com.example.hoangquocphu.demojsonwebservices.Products;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hoangquocphu.demojsonwebservices.Login.JsonReader;
+import com.example.hoangquocphu.demojsonwebservices.MessageBox.MessageShow;
 import com.example.hoangquocphu.demojsonwebservices.R;
 
 import org.json.JSONException;
@@ -37,6 +42,10 @@ public class SendData_Activity extends AppCompatActivity {
     public ListView listView;
 
     public String PartNo, Serial;
+
+    public static String TAG = null;
+
+
     //endregion
 
     @Override
@@ -109,7 +118,7 @@ public class SendData_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             dialog.dismiss();
-            Toast.makeText(SendData_Activity.this, "Send data successfully!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(SendData_Activity.this, "Send data successfully!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -121,19 +130,31 @@ public class SendData_Activity extends AppCompatActivity {
 
     // Send nhiều dữ liệu
     public void sendData() {
-        if (listData.size() < 1) {
-            Toast.makeText(this, "No have data to send to server!", Toast.LENGTH_SHORT).show();
-        } else {
-            for (int i = 0; i < listData.size(); i++) {
 
-                List<String> list = new ArrayList<>(Arrays.asList(listData.get(i).toString().split("\t")));
-                PartNo = list.get(1).toString();
-                Serial = list.get(5).toString();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-                readUrlLink(PartNo, Serial);
+        alertDialog.setTitle("Confirm Request");
+        alertDialog.setMessage("Are you sure send data to server ?");
 
+        DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        ConfirmSendData();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
             }
-        }
+
+        };
+
+        alertDialog.setPositiveButton("Sure", clickListener);
+        alertDialog.setNegativeButton("Cancel", clickListener);
+        alertDialog.setIcon(R.drawable.userquestion);
+        alertDialog.show();
+
     }
 
     // Add data từ textbox xuống listview
@@ -152,6 +173,26 @@ public class SendData_Activity extends AppCompatActivity {
             edPartNo.setText(null);
             edSerial.setText(null);
             edPartNo.requestFocus();
+        }
+    }
+
+    // Confirm send data
+    public void ConfirmSendData() {
+
+        if (listData.size() < 1) {
+            Toast.makeText(this, "No have data to send to server!", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e(TAG, "------------------------------------- begin send data");
+            for (int i = 0; i < listData.size(); i++) {
+
+                List<String> list = new ArrayList<>(Arrays.asList(listData.get(i).toString().split("\t")));
+                PartNo = list.get(1).toString();
+                Serial = list.get(5).toString();
+
+                readUrlLink(PartNo, Serial);
+            }
+            Toast.makeText(SendData_Activity.this, "Send data successfully!", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "------------------------------------- end send data");
         }
     }
 
