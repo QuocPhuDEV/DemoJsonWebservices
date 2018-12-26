@@ -92,7 +92,7 @@ public class Products_Activity extends AppCompatActivity {
         private String Error = null;
         private final String TAG = null;
 
-        private ProgressDialog dialog = new ProgressDialog(getApplicationContext());
+        private ProgressDialog dialog = new ProgressDialog(Products_Activity.this);
 
         @Override
         protected void onPreExecute() {

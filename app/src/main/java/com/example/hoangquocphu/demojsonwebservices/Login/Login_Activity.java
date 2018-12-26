@@ -1,5 +1,8 @@
 package com.example.hoangquocphu.demojsonwebservices.Login;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.hoangquocphu.demojsonwebservices.MainActivity;
-import com.example.hoangquocphu.demojsonwebservices.Products.Products_Activity;
+import com.example.hoangquocphu.demojsonwebservices.MessageBox.MessageShow;
+import com.example.hoangquocphu.demojsonwebservices.Products.SendData_Activity;
 import com.example.hoangquocphu.demojsonwebservices.R;
 import com.example.hoangquocphu.demojsonwebservices.SignIn.SignIn_Activity;
 
@@ -21,8 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Login_Activity extends AppCompatActivity {
     //region Khai báo biến toàn cục
@@ -76,6 +77,13 @@ public class Login_Activity extends AppCompatActivity {
 
     // Xử lý đa tiến trình
     public class MyJsonTask extends AsyncTask<String, JSONObject, Void> {
+        public ProgressDialog dialog = new ProgressDialog(Login_Activity.this);
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Please wait....");
+            dialog.show();
+        }
 
         @Override
         protected Void doInBackground(String... strings) {
@@ -120,7 +128,7 @@ public class Login_Activity extends AppCompatActivity {
                     }
 
                     // Gọi form main và gán giá trị
-                    Intent intent = new Intent(getApplicationContext(), Products_Activity.class);
+                    Intent intent = new Intent(getApplicationContext(), SendData_Activity.class);
                     intent.putExtra("MaNV", MaNV);
                     intent.putExtra("TenNV", TenNV);
                     startActivity(intent);
@@ -129,6 +137,11 @@ public class Login_Activity extends AppCompatActivity {
             } catch (JSONException e) {
                 Toast.makeText(Login_Activity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            dialog.dismiss();
         }
     }
 
@@ -139,6 +152,7 @@ public class Login_Activity extends AppCompatActivity {
         } catch (Exception ex) {
             Toast.makeText(this, "" + ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // Xử lý button cancel
@@ -148,7 +162,7 @@ public class Login_Activity extends AppCompatActivity {
 
     // Đọc url
     public void readUrlLink() {
-        String url = "http://192.168.1.102/api/user/login?userid=" + edUser.getText() + "&password=" + edPassword.getText();
+        String url = "http://192.168.200.191/api/user/login?userid=" + edUser.getText() + "&password=" + edPassword.getText();
         new MyJsonTask().execute(url);
     }
     //endregion

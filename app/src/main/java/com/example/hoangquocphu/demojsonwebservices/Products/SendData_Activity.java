@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -114,7 +115,7 @@ public class SendData_Activity extends AppCompatActivity {
 
     // Đọc url
     public void readUrlLink(String _part, String _serial) {
-        String url = "http://192.168.1.102/api/carton/savelabel?partno=" + _part + "&serial=" + _serial + "";
+        String url = "http://192.168.200.191/api/carton/savelabel?partno=" + _part + "&serial=" + _serial + "";
         new MyJsonTask().execute(url);
     }
 
@@ -133,19 +134,25 @@ public class SendData_Activity extends AppCompatActivity {
 
             }
         }
-
     }
 
     // Add data từ textbox xuống listview
     public void btnAddData(View view) {
-        listData.add(new String("Part No:\t" + edPartNo.getText().toString() + "\t" + "\t" + "\t"
-                + "Serial:\t" + edSerial.getText().toString()));
+        if (TextUtils.isEmpty(edPartNo.getText().toString()) || TextUtils.isEmpty(edSerial.getText().toString())) {
+            //Toast.makeText(this, "You need enter PartNo and Serial", Toast.LENGTH_SHORT).show();
+            edPartNo.setError("Enter PartNo");
+            edSerial.setError("Enter Serial");
+        } else {
+            listData.add(new String("Part No:\t" + edPartNo.getText().toString() + "\t" + "\t" + "\t"
+                    + "Serial:\t" + edSerial.getText().toString()));
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData);
-        listView.setAdapter(arrayAdapter);
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData);
+            listView.setAdapter(arrayAdapter);
 
-        edPartNo.setText(null);
-        edSerial.setText(null);
+            edPartNo.setText(null);
+            edSerial.setText(null);
+            edPartNo.requestFocus();
+        }
     }
 
     //endregion
